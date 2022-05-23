@@ -31,12 +31,12 @@ void loop() {
     int small = atoi(totalGotArr[0]);
     int big = atoi(totalGotArr[1]);    
 
-  
+//    Serial.print("PM2.5 : ");
     Serial.println(small);
-    delay(1000);
+//    Serial.print("PM10 : ");
     Serial.println(big);
+    Serial.print("\n");
     delay(1000);
-    print("\n")
 
       
       //String command = mySerial.readStringUntil('\n'); //추가 시리얼의 값을 수신하여 String으로 저장
