@@ -9,11 +9,11 @@
 
 #include <DHT.h> //DHT.h 라이브러리 추가
 DHT dht(5, DHT11);
-float humi = 0;
-float temp = 0;
+int humi = 0;
+int temp = 0;
 
-//#include <HardwareSerial.h>
-//HardwareSerial mySerial(2); //3개의 시리얼 중 2번 채널을 사용
+#include <HardwareSerial.h>
+HardwareSerial mySerial(2); //3개의 시리얼 중 2번 채널을 사용
 
 //#include <Wire.h>
 
@@ -62,16 +62,18 @@ void loop() {
     // Specify content-type header
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
     
-//      if(mySerial.available() > 0){
-//      //String command = mySerial.readStringUntil('\n'); //추가 시리얼의 값을 수신하여 String으로 저장
-//      Serial.parseFloat();
-//      String command = mySerial.readString();
+      if(mySerial.available() > 0){
+      //String command = mySerial.readStringUntil('\n'); //추가 시리얼의 값을 수신하여 String으로 저장
+      Serial.parseFloat();
+      String command = mySerial.readString();
+
+    humi = dht.readHumidity();
+    temp = dht.readTemperature();
     
     // Prepare your HTTP POST request data
-    String httpRequestData = "api_key=" + apiKeyValue + "&sensor=" + sensorName
-                          + "&location=" + sensorLocation + "&temp=" + String(dht.readTemperature())
-                          + "&humi=" + String(dht.readHumidity()) + "&value3=" + String(0) + "";
-    
+    String httpRequestData = "api_key=" + apiKeyValue 
+                          + "&temp=" + String(temp) + "&humi=" + String(humi) + "&small=" + String(small) + "&big=" + String(big) + "";
+   
     Serial.print("httpRequestData: ");
     Serial.println(httpRequestData);
     
@@ -94,5 +96,5 @@ void loop() {
     Serial.println("WiFi Disconnected");
   }
   //Send an HTTP POST request every 30 seconds
-    delay(1000);  
+    delay(10000);  
 }
