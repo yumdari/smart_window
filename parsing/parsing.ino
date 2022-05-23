@@ -15,9 +15,9 @@ void loop() {
     int index = 0, i = 0;
     char * ptr = NULL;
     
-    while(A_Serial.available())
+    while(mySerial.available())
     {
-      totalGot[index++] = A_Serial.read();
+      totalGot[index++] = mySerial.read();
     }
     totalGot[index] = '\0';
     
@@ -32,17 +32,18 @@ void loop() {
     int big = atoi(totalGotArr[1]);    
 
   
-    Serial.println(distance);
-    delay(500);
-    Serial.println(poGas);
-    delay(100);
+    Serial.println(small);
+    delay(1000);
+    Serial.println(big);
+    delay(1000);
+    print("\n")
 
       
       //String command = mySerial.readStringUntil('\n'); //추가 시리얼의 값을 수신하여 String으로 저장
-      Serial.parseFloat();
-      String command = mySerial.readString();
-      
-      Serial.println(command); //기본 시리얼에 추가 시리얼 내용을 출력    
-      
+//      Serial.parseFloat();
+//      String command = mySerial.readString();
+//      
+//      Serial.println(command); //기본 시리얼에 추가 시리얼 내용을 출력    
+//      
     }
 }
