@@ -55,8 +55,8 @@ void loop() {
 //    A_Serial.println(pm2008_i2c.pm1p0_tsi);
 //    A_Serial.println(pm2008_i2c.pm2p5_tsi);
 //    A_Serial.println(pm2008_i2c.pm10_tsi);
-    A_Serial.println(pm2008_i2c.number_of_0p3_um);
-    A_Serial.println("#");
+    A_Serial.print(pm2008_i2c.number_of_0p3_um);
+    A_Serial.print("#");
     A_Serial.print(pm2008_i2c.number_of_0p5_um);
 //    A_Serial.println(pm2008_i2c.number_of_1_um);
 //    A_Serial.println(pm2008_i2c.number_of_2p5_um);
