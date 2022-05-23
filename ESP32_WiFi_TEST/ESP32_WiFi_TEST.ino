@@ -7,10 +7,9 @@
   #include <WiFiClient.h>
 #endif
 
-#include <HardwareSerial.h>
-HardwareSerial mySerial(2); //3개의 시리얼 중 2번 채널을 사용
-
-//#include <Wire.h>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
 
 // Replace with your network credentials
 const char* ssid     = "yummy2.4";
@@ -24,10 +23,19 @@ const char* serverName = "http://192.168.0.7/post-esp-data.php";
 String apiKeyValue = "tPmAT5Ab3j7F9";
 
 String sensorName = "PM2008";
-String sensorLocation = "Outside";
+String sensorLocation = "Office";
 
+/*#include <SPI.h>
+#define BME_SCK 18
+#define BME_MISO 19
+#define BME_MOSI 23
+#define BME_CS 5*/
 
 #define SEALEVELPRESSURE_HPA (1013.25)
+
+Adafruit_BME280 bme;  // I2C
+//Adafruit_BME280 bme(BME_CS);  // hardware SPI
+//Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK);  // software SPI
 
 void setup() {
   Serial.begin(115200);
@@ -42,7 +50,12 @@ void setup() {
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
 
-   mySerial.begin(115200, SERIAL_8N1, 12, 13); //추가로 사용할 시리얼. RX:12 / TX:13번 핀 사용
+  // (you can also pass in a Wire library object like &Wire2)
+  bool status = bme.begin(0x76);
+  if (status) {
+    Serial.println("Could not find a valid BME280 sensor, check wiring or change I2C address!");
+    while (1);
+  }
 }
 
 void loop() {
@@ -56,11 +69,6 @@ void loop() {
     
     // Specify content-type header
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-
-      if(mySerial.available() > 0){
-      //String command = mySerial.readStringUntil('\n'); //추가 시리얼의 값을 수신하여 String으로 저장
-      Serial.parseFloat();
-      String command = mySerial.readString();
     
     // Prepare your HTTP POST request data
     String httpRequestData = "api_key=" + apiKeyValue + "&sensor=" + sensorName
