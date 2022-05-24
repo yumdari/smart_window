@@ -23,13 +23,11 @@ int big = 0;
 #include <HardwareSerial.h>
 HardwareSerial mySerial(2); //3개의 시리얼 중 2번 채널을 사용
 
-//#include <Wire.h>
-
-// Replace with your network credentials
+// network credentials
 const char* ssid     = "yummy2.4";
 const char* password = "kccikcci";
 
-// REPLACE with your Domain name and URL path or IP address with path
+// Domain name and URL path or IP address with path
 const char* serverName = "http://192.168.0.7/post-esp-data.php";
 
 // Keep this API Key value to be compatible with the PHP code provided in the project page. 
@@ -90,10 +88,10 @@ void parsing() {
     small = atoi(totalGotArr[0]);
     big = atoi(totalGotArr[1]);    
 
-    Serial.println(small); //PM 2.5
-    Serial.println(big); //PM 10
-    Serial.print("\n");
-    delay(1000);
+//    Serial.println(small); //PM 2.5
+//    Serial.println(big); //PM 10
+//    Serial.print("\n");
+//    delay(1000);
     }
 }
 
@@ -107,7 +105,7 @@ void loop() {
     WiFiClient client;
     HTTPClient http;
     
-    // Your Domain name with URL path or IP address with path
+    // Domain name with URL path or IP address with path
     http.begin(client, serverName);
     
     // Specify content-type header
@@ -122,7 +120,7 @@ void loop() {
     temp = dht.readTemperature();
     parsing();
     
-    // Prepare your HTTP POST request data
+    // Prepare HTTP POST request data
     String httpRequestData = "api_key=" + apiKeyValue 
                           + "&temp=" + String(temp) + "&humi=" + String(humi) + "&small=" + String(small) + "&big=" + String(big) + "";
    
