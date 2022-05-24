@@ -146,10 +146,11 @@ void ServoMove() {
         Parsing();
         ServoMove();
 
-        String dataString = "temp = " + String(temp) + " humi = " + String(humi) 
-                        + " PM2.5 = " + String(small) + " PM10 = " + String(big) + "";
-        Serial.println(dataString);
-        Serial.print("\n");
+        String httpRequestData = "api_key=" + apiKeyValue
+                                 + "&temp=" + String(temp) + "&humi=" + String(humi) 
+                                 + "&small=" + String(small) + "&big=" + String(big) + "";
+       Serial.print("httpRequestData: ");
+        Serial.println(httpRequestData);
         http.end();
       }
       else {
