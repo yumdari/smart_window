@@ -1,3 +1,8 @@
+// Changelog:
+//  22.05.24 - added PM2008 data parsing & send to DB 
+//  22.05.23 - added send DHT11 data to DB
+//  22.05.22 - DB connection test
+
 #ifdef ESP32
   #include <WiFi.h>
   #include <HTTPClient.h>
@@ -11,6 +16,9 @@
 DHT dht(5, DHT11);
 int humi = 0;
 int temp = 0;
+
+int small = 0;
+int big = 0;
 
 #include <HardwareSerial.h>
 HardwareSerial mySerial(2); //3개의 시리얼 중 2번 채널을 사용
@@ -34,6 +42,10 @@ String sensorLocation = "Outside";
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 
+// ================================================================
+// ===                      INITIAL SETUP                       ===
+// ================================================================
+
 void setup() {
   Serial.begin(115200);
   
@@ -47,8 +59,47 @@ void setup() {
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
 
-//   mySerial.begin(115200, SERIAL_8N1, 12, 13); //추가로 사용할 시리얼. RX:12 / TX:13번 핀 사용
+   mySerial.begin(115200, SERIAL_8N1, 12, 13); //추가로 사용할 시리얼. RX:12 / TX:13번 핀 사용
 }
+
+// ================================================================
+// ===                     PARSING FUNCTION                     ===
+// ================================================================
+
+void parsing() {
+    if(mySerial.available() > 0){
+
+    char totalGot[50];
+    char * totalGotArr[3];
+    int index = 0, i = 0;
+    char * ptr = NULL;
+    
+    while(mySerial.available())
+    {
+      totalGot[index++] = mySerial.read();
+    }
+    totalGot[index] = '\0';
+    
+    ptr = strtok(totalGot, "#");
+
+    while (ptr !=NULL)
+    {
+      totalGotArr[i++] = ptr;
+      ptr=strtok(NULL, " ");
+    }
+    small = atoi(totalGotArr[0]);
+    big = atoi(totalGotArr[1]);    
+
+    Serial.println(small); //PM 2.5
+    Serial.println(big); //PM 10
+    Serial.print("\n");
+    delay(1000);
+    }
+}
+
+// ================================================================
+// ===                    MAIN PROGRAM LOOP                     ===
+// ================================================================
 
 void loop() {
   //Check WiFi connection status
@@ -69,6 +120,7 @@ void loop() {
 
     humi = dht.readHumidity();
     temp = dht.readTemperature();
+    parsing();
     
     // Prepare your HTTP POST request data
     String httpRequestData = "api_key=" + apiKeyValue 
@@ -97,4 +149,5 @@ void loop() {
   }
   //Send an HTTP POST request every 30 seconds
     delay(10000);  
+  }
 }
